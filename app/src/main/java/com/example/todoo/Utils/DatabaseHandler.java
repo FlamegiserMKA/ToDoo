@@ -1,5 +1,6 @@
 package com.example.todoo.Utils;
 
+import  android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -15,7 +16,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final int VERSION = 1;
     private static final String NAME = "toDoListDatabase";
     private static final String TODO_TABLE = "todo";
-    private static final String ID = "id";
+    private static  String ID = "id";
     private static final String TASK = "task";
     private static final String STATUS = "status";
     private static final String CREATE_TODO_TABLE = "CREATE TABLE " + TODO_TABLE + "(" + ID + "INTEGER PRIMARY KEY AUTOINCREMENT, "
@@ -26,7 +27,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         super(context,NAME,null,VERSION);
     }
     @Override
-    public void onnCreate(SQLiteDatabase db)
+    public void onCreate(SQLiteDatabase db)
     {
         db.execSQL(CREATE_TODO_TABLE);
 
@@ -36,7 +37,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         //Drop the old tables
         db.execSQL("DROP TABLE IF  EXISTS "+TODO_TABLE);
         //Create tables again
-        onnCreate(db);
+        onCreate(db);
     }
     public void openDatabase(){
         db= this.getWritableDatabase();
@@ -47,6 +48,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         cv.put(STATUS,0);
         db.insert(TODO_TABLE,null,cv);
     }
+
     public List<ToDooModel> getAllTasks(){
         List<ToDooModel> taskList=new ArrayList<>();
         Cursor cur= null;
@@ -57,10 +59,10 @@ public class DatabaseHandler extends SQLiteOpenHelper {
              if(cur.moveToFirst()){
                  do{
                      ToDooModel task=new ToDooModel();
-                     task.setId(cur.getInt(cur.getColumnIndex(ID)));
-                     task.setTask(cur.getString(cur.getColumnIndex(TASK)));
-                     task.setStatus(cur.getInt(cur.getColumnIndex(STATUS)));
-                      taskList.add(task);
+                     task.setId(cur.getInt(cur.getColumnIndexOrThrow(ID)));
+                     task.setTask(cur.getString(cur.getColumnIndexOrThrow(TASK)));
+                     task.setStatus(cur.getInt(cur.getColumnIndexOrThrow(STATUS)));
+                     taskList.add(task);
                  }while(cur.moveToNext());
              }
 
@@ -68,6 +70,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         }
         finally {
             db.endTransaction();
+            assert cur != null;
             cur.close();
         }
         return taskList;
