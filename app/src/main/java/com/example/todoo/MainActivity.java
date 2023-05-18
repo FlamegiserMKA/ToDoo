@@ -18,13 +18,14 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements DialogCloseListener{
+public class MainActivity extends AppCompatActivity implements DialogCloseListener {
 
     private RecyclerView tasksRecyclerView;
     private ToDooAdapter tasksadapter;
     private FloatingActionButton fab;
 
-    private List<ToDooModel>taskList;
+    private List<ToDooModel> taskList;
+
     private DatabaseHandler db;
 
     @Override
@@ -38,9 +39,9 @@ public class MainActivity extends AppCompatActivity implements DialogCloseListen
 
         taskList = new ArrayList<>();
 
-        tasksRecyclerView=findViewById(R.id.tasksRecyclerView);
+        tasksRecyclerView = findViewById(R.id.tasksRecyclerView);
         tasksRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        tasksadapter=new ToDooAdapter(db, this);
+        tasksadapter = new ToDooAdapter(db, this);
         tasksRecyclerView.setAdapter(tasksadapter);
 
         fab = findViewById(R.id.fab);
@@ -52,12 +53,13 @@ public class MainActivity extends AppCompatActivity implements DialogCloseListen
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                AddNewTask.newInstance().show(getSupportFragmentManager(),AddNewTask.TAG);
+                AddNewTask.newInstance().show(getSupportFragmentManager(), AddNewTask.TAG);
             }
         });
     }
+
     @Override
-    public void handleDialogClose(DialogInterface dialog){
+    public void handleDialogClose(DialogInterface dialog) {
         taskList = db.getAllTasks();
         Collections.reverse(taskList);
         tasksadapter.setTask(taskList);
